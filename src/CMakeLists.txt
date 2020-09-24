@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake")
+
 project(Hawk)
 
 # TODO: improve cmake
@@ -19,6 +21,7 @@ foreach(filename ${files})
 endforeach()
 
 find_package(gflags REQUIRED)
+find_package(bpf REQUIRED)
 
 set(SOURCE_FILES
         "main/config.cpp"
@@ -28,5 +31,5 @@ set(BPFToolPath "/root/linux/tools/lib/bpf")
 list(TRANSFORM files APPEND "_user.o")
 
 add_executable(hawk ${SOURCE_FILES} ${files})
-target_include_directories(hawk PUBLIC ${gflags_INCLUDE_DIR} include userspace)
-target_link_libraries(hawk gflags ${BPFToolPath}/libbpf.a elf z)
+target_include_directories(hawk PUBLIC ${gflags_INCLUDE_DIR} ${bpf_INCLUDE_DIR} include userspace)
+target_link_libraries(hawk ${gflags_LIBRARIES} ${bpf_LIBRARIES} ${BPFToolPath}/libbpf.a elf z)
